@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >  
+<mapper namespace="com.jk.mapper.blog.DeptsMapper">
+	
+	<!--<select id="list" resultType="com.jk.entity.DeptDO">
+
+       SELECT dept_id AS deptId , parent_id AS parentId , name , order_num AS ordernum,del_flag AS delflag FROM sys_dept
+    </select>
+
+    <select id="querydepts" resultType="com.jk.entity.DeptDO">
+        SELECT dept_id AS deptId , parent_id AS parentId , NAME , order_num AS ordernum,del_flag AS delflag FROM sys_dept WHERE dept_id=#{pId}
+    </select>
+
+    <insert id="addDept" parameterType="com.jk.entity.DeptDO">
+        INSERT INTO sys_dept (parent_id,NAME,order_num,del_flag) VALUES (#{parentId},#{name},#{orderNum},#{delFlag})
+    </insert>
+
+    <update id="updatedept" parameterType="com.jk.entity.DeptDO">
+        UPDATE sys_dept SET NAME = #{name},parent_id = #{parentId},order_num = #{orderNum},del_flag = #{delFlag} where dept_id =#{deptId}
+    </update>-->
+
+    <select id="queryblogtotal" resultType="long">
+        SELECT count(1) from blog_content
+    </select>
+
+    <select id="queryblog" resultType="com.jk.entity.ContentDO">
+        SELECT `cid`,`title`,`slug`,`created`,`modified`,`content`,`type`,`tags`,`categories`,`hits`,`comments_num`,`allow_comment` as 'allowComment',`allow_ping`,`allow_feed` as 'allowFeed',`status`,`author`,`gtm_create`,`gtm_modified` FROM blog_content limit #{offset},#{limit}
+    </select>
+
+    <insert id="saveblog" parameterType="com.jk.entity.ContentDO">
+            insert into blog_content
+            <trim prefix="(" suffix=")" suffixOverrides="," >
+                <if test="title != null" >
+                    title,
+                </if>
+                <if test="slug != null" >
+                    slug,
+                </if>
+                <if test="created != null" >
+                    created,
+                </if>
+                <if test="modified != null" >
+                    modified,
+                </if>
+                <if test="type != null" >
+                    type,
+                </if>
+                <if test="tags != null" >
+                    tags,
+                </if>
+                <if test="categories != null" >
+                    categories,
+                </if>
+                <if test="hits != null" >
+                    hits,
+                </if>
+                <if test="commentsNum != null" >
+                    comments_num,
+                </if>
+                <if test="allowComment != null" >
+                    allow_comment,
+                </if>
+                <if test="allowPing != null" >
+                    allow_ping,
+                </if>
+                <if test="allowFeed != null" >
+                    allow_feed,
+                </if>
+                <if test="status != null" >
+                    status,
+                </if>
+                <if test="author != null" >
+                    author,
+                </if>
+                <if test="gtmCreate != null" >
+                    gtm_create,
+                </if>
+                <if test="gtmModified != null" >
+                    gtm_modified,
+                </if>
+                <if test="content != null" >
+                    content,
+                </if>
+            </trim>
+            <trim prefix="values (" suffix=")" suffixOverrides="," >
+                <if test="title != null" >
+                    #{title,jdbcType=VARCHAR},
+                </if>
+                <if test="slug != null" >
+                    #{slug,jdbcType=VARCHAR},
+                </if>
+                <if test="created != null" >
+                    #{created,jdbcType=BIGINT},
+                </if>
+                <if test="modified != null" >
+                    #{modified,jdbcType=BIGINT},
+                </if>
+                <if test="type != null" >
+                    #{type,jdbcType=VARCHAR},
+                </if>
+                <if test="tags != null" >
+                    #{tags,jdbcType=VARCHAR},
+                </if>
+                <if test="categories != null" >
+                    #{categories,jdbcType=VARCHAR},
+                </if>
+                <if test="hits != null" >
+                    #{hits,jdbcType=INTEGER},
+                </if>
+                <if test="commentsNum != null" >
+                    #{commentsNum,jdbcType=INTEGER},
+                </if>
+                <if test="allowComment != null" >
+                    #{allowComment,jdbcType=INTEGER},
+                </if>
+                <if test="allowPing != null" >
+                    #{allowPing,jdbcType=INTEGER},
+                </if>
+                <if test="allowFeed != null" >
+                    #{allowFeed,jdbcType=INTEGER},
+                </if>
+                <if test="status != null" >
+                    #{status,jdbcType=INTEGER},
+                </if>
+                <if test="author != null" >
+                    #{author,jdbcType=VARCHAR},
+                </if>
+                <if test="gtmCreate != null" >
+                    #{gtmCreate,jdbcType=TIMESTAMP},
+                </if>
+                <if test="gtmModified != null" >
+                    #{gtmModified,jdbcType=TIMESTAMP},
+                </if>
+                <if test="content != null" >
+                    #{content,jdbcType=LONGVARCHAR},
+                </if>
+            </trim>
+        </insert>
+
+    <select id="get" resultType="com.jk.entity.ContentDO">
+        select `cid`,`title`,`slug`,`created`,`modified`,`content`,`type`,`tags`,`categories`,`hits`,`comments_num`,`allow_comment`,`allow_ping`,`allow_feed`,`status`,`author`,`gtm_create`,`gtm_modified` from blog_content where cid = #{value}
+    </select>
+
+    <select id="queryhui" resultType="com.jk.entity.ContentDO">
+        SELECT `cid`,`title`,`slug`,`created`,`modified`,`content`,`type`,`tags`,`categories`,`hits`,`comments_num`,`allow_comment` as 'allowComment',`allow_ping`,`allow_feed` as 'allowFeed',`status`,`author`,`gtm_create`,`gtm_modified` FROM blog_content where cid = #{cid}
+    </select>
+
+    <update id="updates" parameterType="com.jk.entity.ContentDO">
+
+        UPDATE blog_content b SET
+        <if test="title != null" >
+            title = #{title},
+        </if>
+        <if test="slug != null" >
+            slug = #{slug},
+        </if>
+        <if test="created != null" >
+            created = #{created},
+        </if>
+        <if test="modified != null" >
+            modified = #{modified},
+        </if>
+        <if test="type != null" >
+            type = #{type},
+        </if>
+        <if test="tags != null" >
+            tags = #{tags},
+        </if>
+        <if test="categories != null" >
+            categories = #{categories},
+        </if>
+        <if test="hits != null" >
+            hits = #{hits},
+        </if>
+        <if test="commentsNum != null" >
+            comments_num = #{commentsNum},
+        </if>
+        <if test="allowComment != null" >
+            allow_comment = #{allowComment},
+        </if>
+        <if test="allowPing != null" >
+            allow_ping = #{allowPing},
+        </if>
+        <if test="allowFeed != null" >
+            allow_feed = #{allowFeed},
+        </if>
+        <if test="status != null" >
+            status = #{status},
+        </if>
+        <if test="author != null" >
+            author = #{author},
+        </if>
+        <if test="gtmCreate != null" >
+            gtm_create = #{gtmcreate},
+        </if>
+        <if test="gtmModified != null" >
+            gtm_modified = #{gtmmodified},
+        </if>
+        <if test="content != null" >
+            content = #{content}
+        </if>
+         WHERE cid = #{cid}
+    </update>
+
+
+   <!-- <update id="updateuser" parameterType="com.jk.entity.User">
+
+        UPDATE sys_User SET NAME = #{name},email= #{email},mobile = #{mobile},sex = #{sex},birth = #{username},live_address = #{live_address},hobby = #{hobby},
+         province = #{province},city = #{city},district = #{district} where user_id =#{user_id}
+    </update>-->
+
+<!--    <select id="querytotal" resultType="long">
+
+        SELECT COUNT (1) from sys_dept where 1=1
+        <if test="name != '' and name != null">
+            and name = #{name}
+        </if>
+    </select>
+
+    <select id="querydept" resultType="com.jk.entity.DeptDO">
+
+        SELECT dept_id AS deptId , parent_id AS parentId , NAME , order_num AS ordernum,del_flag AS delflag FROM sys_dept LIMIT #{page},#{rows} WHERE 1=1
+        <if test="name != '' and name != null">
+            and name = #{name}
+        </if>
+</select>-->
+</mapper>   

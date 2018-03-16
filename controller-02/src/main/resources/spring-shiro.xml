@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans.xsd"
+	default-lazy-init="false">
+
+
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<!-- 调用我们配置的权限管理器 -->
+        <property name="securityManager" ref="securityManager"/>  
+        <!-- 配置我们的登录请求地址 -->
+        <property name="loginUrl" value="/toLoginPage"/>  
+        <property name="successUrl" value="/rest/index"/>  
+        <!-- 如果您请求的资源不再您的权限范围，则跳转到/403请求地址 -->
+        <property name="unauthorizedUrl" value="/error/403"/>  
+       <!--  自定义过滤器 -->
+        <property name="filters">
+        	<map>
+				<entry key="roles">
+					<bean class="com.jk.shiro.CustomRolesAuthorizationFilter" />
+	            </entry>
+			</map>
+		</property>
+        <!--过滤定义，从上而下:过滤条件越严格排序越靠上--> 
+        <property name="filterChainDefinitions">  
+            <value>
+                /user/* = roles[超级管理员]
+                / = authc
+                /toLoginPage = anon
+                /login = anon
+                /** = anon
+            </value>  
+        </property>  
+    </bean>  
+  
+    <!-- 安全管理器 -->  
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">  
+        <property name="realms">
+            <list>
+                <bean class="com.jk.shiro.UserRealm"></bean>
+            </list>
+        </property>
+
+        <property name="cacheManager">
+            <bean class="org.apache.shiro.cache.ehcache.EhCacheManager">
+                <property name="cacheManagerConfigFile" value="classpath:ehcache.xml"></property>
+            </bean>
+        </property>
+        <property name="sessionManager">
+            <bean class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+                <property name="sessionListeners">
+                    <list>
+                        <bean class="com.jk.listener.BDSessionListener"></bean>
+                    </list>
+                </property>
+                <property name="sessionDAO">
+                    <ref bean="sessionDAO"/>
+                </property>
+            </bean>
+        </property>
+
+
+    </bean>
+
+
+
+    <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.MemorySessionDAO"></bean>
+  
+    <!-- Shiro生命周期处理器 -->  
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+
+</beans>

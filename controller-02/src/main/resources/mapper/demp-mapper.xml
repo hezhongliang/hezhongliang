@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jk.mapper.department.DepartmentMapper">
+
+<!-- 	<select id="get" resultType="com.bootdo.common.domain.FileDO">
+		select `id`,`type`,`url`,`create_date` from sys_file where id = #{value}
+	</select> -->
+
+   <!-- <select id="list" resultType="com.jk.entity.user.DeptDO">
+        select `dept_id`,`parent_id`,`name`,`order_num`,`del_flag` from
+        sys_dept
+        <where>
+            <if test="deptId != null and deptId != ''"> and dept_id = #{deptId} </if>
+            <if test="parentId != null and parentId != ''"> and parent_id = #{parentId} </if>
+            <if test="name != null and name != ''"> and name = #{name} </if>
+            <if test="orderNum != null and orderNum != ''"> and order_num = #{orderNum} </if>
+            <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by dept_id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>-->
+    <select id="list" resultType="com.jk.entity.user.DeptDO">
+     SELECT d.dept_id deptId,d.parent_id parentId,d.name,d.order_num orderNum,d.del_flag delFlag FROM sys_dept d
+    </select>
+   <!-- <select id="queryList" resultType="com.jk.entity.user.DeptDO">
+        SELECT d.dept_id deptId,d.parent_id parentId,d.name,d.order_num orderNum,d.del_flag delFlag FROM sys_dept d limit #{start},#{end}
+    </select>
+    <select id="queryCount" resultType="long">
+        SELECT count(d.dept_id) FROM sys_dept d
+
+    </select>-->
+
+
+
+
+    <delete id="remove">
+        delete from sys_dept where dept_id = #{value}
+    </delete>
+    <select id="get" resultType="com.jk.entity.user.DeptDO">
+        select
+        d.dept_id deptId,d.parent_id parentId,d.name,d.order_num orderNum,d.del_flag delFlag from sys_dept d
+        where d.dept_id = #{value}
+    </select>
+
+    <insert id="save" parameterType="com.jk.entity.user.DeptDO"
+            useGeneratedKeys="true" keyProperty="deptId">
+        insert into sys_dept
+        (
+        `parent_id`,
+        `name`,
+        `order_num`,
+        `del_flag`
+        )
+        values
+        (
+        #{parentId},
+        #{name},
+        #{orderNum},
+        #{delFlag}
+        )
+    </insert>
+    <update id="update" parameterType="com.jk.entity.user.DeptDO">
+        update sys_dept
+        <set>
+            <if test="parentId != null">`parent_id` = #{parentId}, </if>
+            <if test="name != null">`name` = #{name}, </if>
+            <if test="orderNum != null">`order_num` = #{orderNum}, </if>
+            <if test="delFlag != null">`del_flag` = #{delFlag}</if>
+        </set>
+        where dept_id = #{deptId}
+    </update>
+
+</mapper>

@@ -1,0 +1,18 @@
+﻿
+
+引入
+	<script type="text/javascript" src="js/My97/My97DatePicker/WdatePicker.js"></script>
+
+--使用------
+
+带时分秒
+           <input type="text" class="Wdate" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" >
+
+
+普通
+           <input type="text" class="Wdate" onclick="WdatePicker()" >
+
+日期区间查询
+	   <input id="date1" class="Wdate"   onFocus="WdatePicker({maxDate:'#F{$dp.$D(\'date1\')||\'2020-10-01\'}'})"/> 
+	   <input id="date2" class="Wdate"   onFocus="WdatePicker({minDate:'#F{$dp.$D(\'date2\')}',maxDate:'2020-10-01'})"/><br>
+	   <input type="button" onclick="searchs()" value="查询">

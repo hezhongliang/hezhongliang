@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="common-02" />
+        <module name="controller-02" />
+        <module name="entity-02" />
+        <module name="mapper-02" />
+        <module name="service-02" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="common-02" target="1.8" />
+      <module name="controller-02" target="1.8" />
+      <module name="entity-02" target="1.8" />
+      <module name="mapper-02" target="1.8" />
+      <module name="service-02" target="1.8" />
+      <module name="ssm-02" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >  
+<mapper namespace="com.jk.mapper.user.UserMapper">
+	<select id="queryTotal" resultType="long">
+	select count(1) from  t_user
+	</select>
+	<select id="queryTypePage" resultType="com.jk.entity.user.User">
+	select * from t_user limit #{start},#{end}
+	</select>
+  	<insert id="add">
+  		insert into t_user values(userID,#{userAcount},#{userPass})
+  	</insert>
+  	<delete id="del">
+  		delete from t_user where userID=#{userID}
+  	</delete>
+  	<select id="toup" resultType="com.jk.entity.user.User">
+	select * from t_user where userID=#{userID}
+	</select>
+  	
+  	<update id="ups">
+  	update t_user set userAcount =#{userAcount} , userPass =#{userPass} where userID=#{userID}
+  	</update>
+  	
+  	
+  	<insert parameterType="java.util.List" id="insertUsers">
+	insert into t_user (userAcount, userPass) values 
+	<foreach separator="," index="index" item="item" collection="list"> 
+	(#{item.userAcount},#{item.userPass})
+ 	</foreach>
+	</insert>
+
+
+
+	<select id="listRoleId" resultType="long">
+		select role_id from
+		sys_user_role where
+		user_id=#{userId}
+	</select>
+
+
+	<!--<select id="get" resultType="UserRoleDO">-->
+		<!--select `id`,`user_id`,`role_id` from-->
+		<!--sys_user_role where id = #{value}-->
+	<!--</select>-->
+	<select id="get1" resultType="com.jk.util.entity.DeptDO">
+		select
+		`dept_id` AS deptId,`parent_id` AS parentId,`name` AS name,`order_num` AS orderNum,`del_flag` AS delFlag from sys_dept
+		where dept_id = #{deptId}
+	</select>
+
+	<select id="get" resultType="com.jk.util.entity.UserDO">
+select `user_id` as userId,`username`,`name`,`password`,`dept_id` as deptId,
+`email`,`mobile`,`status`,`user_id_create` as userIdCreate,`gmt_create` as gmtCreate,
+`gmt_modified` as gmtModified,`sex`,`birth`,`pic_id` as picId,
+`live_address` as liveAddress,`hobby`,`province`,`city`,
+`district` from sys_user where user_id = #{userId}	</select>
+	<select id="list" resultType="com.jk.util.entity.DictDO">
+		select
+		`id`,`name`,`value`,`type`,`description`,`sort`,`parent_id`,`create_by`,`create_date`,`update_by`,`update_date`,`remarks`,`del_flag`
+		from sys_dict
+		<where>
+			<if test="id != null and id != ''"> and id = #{id} </if>
+			<if test="name != null and name != ''"> and name = #{name} </if>
+			<if test="value != null and value != ''"> and value = #{value} </if>
+			<if test="type != null and type != ''"> and type = #{type} </if>
+			<if test="description != null and description != ''"> and description = #{description} </if>
+			<if test="sort != null and sort != ''"> and sort = #{sort} </if>
+			<if test="parentId != null and parentId != ''"> and parent_id = #{parentId} </if>
+			<if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+			<if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+			<if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy} </if>
+			<if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+			<if test="remarks != null and remarks != ''"> and remarks = #{remarks} </if>
+			<if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
+			<otherwise>
+				order by id desc
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+
+
+
+	<update id="updatePersonal" >
+		update sys_user
+		<set>
+			<if test="username != null">`username` = #{username}, </if>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="password != null">`password` = #{password}, </if>
+			<if test="deptId != null">`dept_id` = #{deptId}, </if>
+			<if test="email != null">`email` = #{email}, </if>
+			<if test="mobile != null">`mobile` = #{mobile}, </if>
+			<if test="status != null">`status` = #{status}, </if>
+			<if test="userIdCreate != null">`user_id_create` = #{userIdCreate}, </if>
+			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
+			<if test="gmtModified != null">`gmt_modified` = #{gmtModified}, </if>
+			<if test="sex != null">`sex` = #{sex}, </if>
+			<if test="birth != null">`birth` = #{birth}, </if>
+			<if test="picId != null">`pic_id` = #{picId}, </if>
+			<if test="liveAddress != null">`live_address` = #{liveAddress}, </if>
+			<if test="hobby != null">`hobby` = #{hobby}, </if>
+			<if test="province != null">`province` = #{province}, </if>
+			<if test="city != null">`city` = #{city}, </if>
+			<if test="district != null">`district` = #{district}</if>
+		</set>
+		where user_id = #{userId}
+	</update>
+
+	<update id="resetPwd">
+		UPDATE SYS_USER SET password = #{pwdNew} WHERE user_id = #{userId}
+	</update>
+	<!-- 标签总结
+		增：insert
+		删：delete
+		改：update
+		查：select
+	 -->
+	
+	<!-- 属性总结 
+		id：与mapper中的方法名保持一致
+		parameterType：接收mapper传过来的参数类型（可缺省）
+		resultType：返回给mapper的结果类型（必须的，不可缺省）
+	-->
+	
+	<!-- 取值方式
+		${}：不安全，有sql注入风险，取出的数据都是源数据
+		#{}：安全，无sql注入风险，取出的数据都是字符串
+	 -->
+	<update id="update" parameterType="com.jk.util.entity.UserDO">
+		update sys_user
+		<set>
+			<if test="username != null">`username` = #{username}, </if>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="password != null">`password` = #{password}, </if>
+			<if test="deptId != null">`dept_id` = #{deptId}, </if>
+			<if test="email != null">`email` = #{email}, </if>
+			<if test="mobile != null">`mobile` = #{mobile}, </if>
+			<if test="status != null">`status` = #{status}, </if>
+			<if test="userIdCreate != null">`user_id_create` = #{userIdCreate}, </if>
+			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
+			<if test="gmtModified != null">`gmt_modified` = #{gmtModified}, </if>
+			<if test="sex != null">`sex` = #{sex}, </if>
+			<if test="birth != null">`birth` = #{birth}, </if>
+			<if test="picId != null">`pic_id` = #{picId}, </if>
+			<if test="liveAddress != null">`live_address` = #{liveAddress}, </if>
+			<if test="hobby != null">`hobby` = #{hobby}, </if>
+			<if test="province != null">`province` = #{province}, </if>
+			<if test="city != null">`city` = #{city}, </if>
+			<if test="district != null">`district` = #{district}</if>
+		</set>
+		where user_id = #{userId}
+	</update>
+	<select id="listUserPerms" resultType="string">
+		elect role_name from sys_role r1
+		right join (select role_id from sys_user_role where user_id = #{userID}) r2
+		on r1.role_id = r2.role_id
+	</select>
+	<select id="login" resultType="com.jk.util.entity.UserDO">
+select `user_id` as userId,`username`,`name`,`password`,`dept_id` as deptId,
+`email`,`mobile`,`status`,`user_id_create` as userIdCreate,`gmt_create` as gmtCreate,
+`gmt_modified` as gmtModified,`sex`,`birth`,`pic_id` as picId,
+`live_address` as liveAddress,`hobby`,`province`,`city`,
+`district` from sys_user
+		where username = #{username}
+		 and password = #{password}
+	</select>
+
+
+	<select id="selectUserRoleListByUserID" resultType="string">
+		select role_name from sys_role r1
+	 right join (select role_id from sys_user_role where user_id = #{userID}) r2
+	 on r1.role_id = r2.role_id
+	</select>
+
+	<insert id="save" parameterType="com.jk.util.entity.UserDO" useGeneratedKeys="true" keyProperty="userId">
+		insert into sys_user
+		(
+		`username`,
+		`name`,
+		`password`,
+		`dept_id`,
+		`email`,
+		`mobile`,
+		`status`,
+		`user_id_create`,
+		`gmt_create`,
+		`gmt_modified`,
+		`sex`,
+		`birth`,
+		`pic_id`,
+		`live_address`,
+		`hobby`,
+		`province`,
+		`city`,
+		`district`
+		)
+		values
+		(
+		#{username},
+		#{name},
+		#{password},
+		#{deptId},
+		#{email},
+		#{mobile},
+		#{status},
+		#{userIdCreate},
+		#{gmtCreate},
+		#{gmtModified},
+		#{sex},
+		#{birth},
+		#{picId},
+		#{liveAddress},
+		#{hobby},
+		#{province},
+		#{city},
+		#{district}
+		)
+	</insert>
+
+
+	<delete id="remove">
+		delete from sys_user where id = #{value}
+	</delete>
+
+
+</mapper>   

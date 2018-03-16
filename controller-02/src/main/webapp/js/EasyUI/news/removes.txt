@@ -1,0 +1,53 @@
+<%-- 
+		<table id="dg3"></table> 
+						aa=0;
+	                	var s = $('#dg3').datagrid('getChecked')
+						var ids = "";  
+				        for(var i=0 ; i<s.length; i++){  
+				                ids += "," +s[i].brandid ;   
+				                aa++;             
+				        }  
+					 ids = ids.substr(1);  
+					 alert(ids)
+					 $.messager.confirm("提示", "确定要删除这"+aa+"条吗？", function (isTrue) {  
+	                if (isTrue) {  
+					  $.ajax({
+							url:'<%=request.getContextPath()%>/crud/todel.do?ids=' + ids,
+							type:'post',
+							dataType:'json',
+							success:function(data){
+								if(data>0){
+									 	$.messager.alert('提示', '删除成功！');  
+										$('#dg3').datagrid('reload');
+										 $.messager.show({
+	 			                 				title:'我的消息',
+	 			                 				msg:'删除'+data+'条成功',
+	 			                 				timeout:1000,
+	 			                 				showType:'show'
+	 			                 			});
+								}
+							}
+						}); 
+	                 } 
+	             })
+	          
+----------controller
+	@RequestMapping("todel")
+	@ResponseBody
+	public Object todel(String[] ids){
+		int n=brandService.todel(ids);
+		return n;
+	}
+	
+---------dao
+	int todel(@Param(value="idarray")String[] ids);
+	
+--------mapper
+	<delete id="todel">
+	 delete from t_brand t where t.brandid in
+	 <foreach item="item" index="index" collection="idarray" open="(" separator="," close=")"> 
+				#{item} 
+	</foreach>
+	</delete>
+			
+ --%>

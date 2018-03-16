@@ -1,0 +1,31 @@
+﻿
+	<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+		    <ul class="breadcrumb">
+				<li>条件查询</li>
+			</ul>
+			<div class="row clearfix">
+				<div class="col-md-3 column">
+				</div>
+				<div class="col-md-6 column">
+					<p>
+					<input type="text" class="Wdate" onclick="WdatePicker()" id="date1">--
+					<input type="text" class="Wdate" onclick="WdatePicker()" id="date2"><p>
+					类型:<select class="selectpicker show-tick form-control" class="selectpicker show-tick form-control" id="bickType">
+
+					          <option value="">请选择</option>
+
+					
+					        </select><p>
+  		
+				</div>
+					<div class="col-md-3 column">
+				</div>
+			</div>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input class="btn btn-success" value="搜索" onclick="search()" style="width:80px"><p>&nbsp;<p>
+			<input type="button" class="btn btn-danger" value="批量删除" onclick="del()" >
+		</div>
+	</div>
+</div>

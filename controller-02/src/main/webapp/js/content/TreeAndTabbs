@@ -1,0 +1,165 @@
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<link href="<%=request.getContextPath() %>/js/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+<!-- Bootstrap 核心css -->
+<link href="<%=request.getContextPath() %>/js/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap TreeView css -->
+<link href="<%=request.getContextPath() %>/js/bootstrap-treeview/dist/bootstrap-treeview.min.css" rel="stylesheet">
+<!-- Bootstrap addTabs css -->
+<link href="<%=request.getContextPath() %>/js/bootStrap-addTabs/bootstrap.addtabs.css" rel="stylesheet">
+<!-- Bootstrap table css -->
+<link href="<%=request.getContextPath() %>/js/bootstrap-table/dist/bootstrap-table.css" rel="stylesheet">
+<!-- bootstrap-datetimepicker css -->
+<link href="<%=request.getContextPath() %>/js/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css" rel="stylesheet">
+<!-- bootstrap-dialog css -->
+<link href="<%=request.getContextPath() %>/js/bootstrap-dialog/dist/css/bootstrap-dialog.css" rel="stylesheet">
+<!-- bootstrap-fileinput css -->
+<link href="<%=request.getContextPath() %>/js/bootstrap-fileinput/css/fileinput.css" rel="stylesheet">  
+<body>
+
+
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-4 column">
+			<div id="tree"> </div>
+		</div>
+		<div class="col-md-8 column">
+                    <ul id="myTab" class="nav nav-tabs">
+                        <li >
+                            <a href="#home" data-toggle="tab"> 首页</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                   </div>
+		</div>
+	</div>
+</div>
+
+
+<script src="<%=request.getContextPath() %>/js/jquery.min.js"></script>
+<!-- bootstrap 核心js文件 -->
+<script src="<%=request.getContextPath() %>/js/bootstrap/js/bootstrap.min.js"></script>
+<!-- bootStrap TreeView -->
+<script src="<%=request.getContextPath() %>/js/bootstrap-treeview/dist/bootstrap-treeview.min.js"></script>
+<!-- bootStrap addTabs -->
+<script src="<%=request.getContextPath() %>/js/bootStrap-addTabs/bootstrap.addtabs.js"></script>
+<!-- bootStrap table -->
+<script src="<%=request.getContextPath() %>/js/bootstrap-table/dist/bootstrap-table.js"></script>
+<!-- bootStrap table 语言包中文-->
+<script src="<%=request.getContextPath() %>/js/bootstrap-table/dist/locale/bootstrap-table-zh-CN.js"></script>
+<!-- bootstrap-datetimepicker -->
+<script src="<%=request.getContextPath() %>/js/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<script src="<%=request.getContextPath() %>/js/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+<!-- bootstrap-dialog -->
+<script src="<%=request.getContextPath() %>/js/bootstrap-dialog/dist/js/bootstrap-dialog.js"></script>
+<!-- bootstrap-fileinput -->
+<script src="<%=request.getContextPath() %>/js/bootstrap-fileinput/js/fileinput.js"></script>
+<script src="<%=request.getContextPath() %>/js/bootstrap-fileinput/js/locales/zh.js"></script>
+<script type="text/javascript">
+function getTreeData(){
+	    var tree_data = "";
+	            $.ajax({
+	                url:"<%=request.getContextPath()%>/crud/queryTree.do",
+	                type:"post",
+	                dataType:"json",
+	                async:false,
+	                success:function(data){
+	                    tree_data = data;
+	                },
+	                error:function(){
+	                    alert("查询出错");
+	                }
+	            });
+	            return tree_data;
+	       /*     var tree = [
+	                       {
+	                    	   text: "菜单",
+	                       },
+	                       {
+	                    	    text: "11",
+	                    	    href:"user/toqueryAll.do",
+	                    	    nodes: [
+	                    	      {
+	                    	        text: "Child 1",
+	                    	        href:"",
+	                    	      },
+	                    	      {
+	                    	        text: "Child 2"
+	                    	      }
+	                    	    ]
+	                    	  },
+	                    	  {
+	                    	    text: "22",
+	                    	    href:"user/toqueryLogo.do",
+	                    	  },
+	                    	  {
+	                    	    text: "Parent 3"
+	                    	  }
+	                    	];                  
+	            return tree; */
+	        }
+
+	//调用treeview方法
+	$('#tree').treeview(
+	                {
+	                    data:getTreeData(),
+	                    onNodeSelected:function(event,node){
+	                       // alert(node.href);
+	                        if(node.href!=null && node.href!=""){
+	                            $.ajax({
+	                                url:"<%=request.getContextPath()%>/"+node.href,
+	                                type:"post",
+	                                success:function(data){
+	                                    $.addtabs.add({
+	                                        id:node.id,
+	                                        title:node.text,
+	                                        content:data,
+	                                    })    
+	                                }
+	                            })
+	                        }
+	                        
+	                    }
+	                })
+</script>
+</body>
+</html>
+
+<!-- 
+-----controller
+	@RequestMapping("queryTree")
+	@ResponseBody
+	public Object queryTree(){
+		List<Menus> trees = menuService.queryTree();
+		return trees;
+	}
+----service
+	@Autowired
+	private MongoTemplate mongoTemplate;
+	
+	
+	@Override
+	public List<Menus> queryTree() {
+		return this.recursionTree("0");
+	}
+	public List<Menus> recursionTree(String pid){
+//      根据id查询子节点列表
+        List<Menus> trees = mongoTemplate.find(new Query(Criteria.where("pid").is(pid)), Menus.class,"menuTree");
+//      判断查询到数据，则循环操作
+        System.out.println(trees);
+        if(trees != null && trees.size()>0){
+            for (int i = 0; i < trees.size(); i++) {
+//              根据当前节点id查询新的子集列表，
+                List<Menus> trees2 = recursionTree(trees.get(i).getId());
+//              将列表set到当前树节点对象中
+                trees.get(i).setNodes(trees2);
+            }
+        }
+        return trees;
+    }
+ -->

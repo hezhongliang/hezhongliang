@@ -1,0 +1,31 @@
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<!-- 引入EasyUI的样式文件-->
+<link rel="stylesheet" href="${pageContext.request.contextPath}/js/EasyUI/themes/default/easyui.css" type="text/css"/>
+<!-- 引入EasyUI的图标样式文件-->
+<link rel="stylesheet" href="${pageContext.request.contextPath}/js/EasyUI/themes/icon.css" type="text/css"/>
+<link rel="stylesheet" href="<%=request.getContextPath()%>/js/uploadify/uploadify.css">
+</head>
+<body>   
+
+<!-- 引入JQuery -->
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/EasyUI/jquery.min.js"></script>
+<script type="text/javascript" src="js/My97/My97DatePicker/WdatePicker.js"></script>
+<!-- 引入EasyUI -->
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/EasyUI/jquery.easyui.min.js"></script>
+<!-- 引入EasyUI的中文国际化js，让EasyUI支持中文 -->
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/EasyUI/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/EasyUI/util-js.js"></script>
+<script src="<%=request.getContextPath()%>/js/uploadify/jquery.uploadify.min.js"></script>
+
+<script type="text/javascript">
+
+</script>	
+</body>
+</html>

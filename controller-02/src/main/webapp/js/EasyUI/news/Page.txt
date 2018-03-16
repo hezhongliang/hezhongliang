@@ -1,0 +1,139 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<input id="brandname" class="easyui-textbox" data-options="iconCls:'icon-search'"> &nbsp;&nbsp;&nbsp;&nbsp;
+<a onclick="searchs()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a><br><br><br><br>
+
+<table id="dg"></table> 
+<script type="text/javascript">
+function searchs(){
+	$('#dg').datagrid({    
+	    url:'<%=request.getContextPath()%>/crud/queryAll.do',
+	    toolbar: [{
+			iconCls: 'icon-add' ,
+			handler: function(){
+			}
+		},{
+			iconCls: 'icon-remove' ,
+			handler: function(){
+			}
+		}],
+	    columns:[[ 
+					{field:'box',title:'',checkbox:true},
+			        {field:'userheadimg',title:'头像',width:100,
+						formatter: function(value,row,index){
+			        		
+							return '<img width="100" src="<%=request.getContextPath()%>/'+value+'"/>';
+							}
+
+			        },    
+			        {field:'usersex',title:'性别',width:100,
+			        	formatter:function(value,row,index){
+			        		return value == "1"?'女':'男';
+			        	}
+
+			        }, 
+			        {field:'deptid',title:'部门',width:100,
+			        	formatter: function(value,row,index){
+			        		
+							return '<input type="button" value="修改" onclick="ups(\''+row.studentid+'\')"> '
+						}
+			        }, 
+			    ]],
+			    queryParams: {
+			    	//条件查询传值
+			    	username: $("#username").val(),
+				},
+				pagination:true,
+				pageList:[3,6,9],
+				pageSize:3,
+				pageNumber:1,
+			});  
+
+}
+$(function(){
+	searchs();
+
+})
+
+</script>
+</body>
+</html>
+<!--
+-----controller
+	@RequestMapping("queryAll")
+	@ResponseBody
+	public Object queryAll(Color color,int page,int rows){
+		Map<String, Object> map =userService.queryAll(color,page,rows);
+		return map;
+	} 
+-----service
+	@Override
+	public Map<String, Object> queryAll(Color color, int page, int rows) {
+		Map<String, Object> map = new HashMap<>();
+		long tot = userDao.queryTotal(color);
+		int start = (page-1)*rows;
+		int end = start +rows;
+		List types2 = userDao.queryTypePage(color,start,end);
+		map.put("total", tot);
+		map.put("rows", types2);
+		return map;
+	}
+	
+-----mapper
+<select id="queryTypePage" resultType="com.jk.pojo.Student">
+		select * from (
+		  select a.*,rownum rn from (
+			 select t.*,classname from  t_student t,t_classes c  
+				where t.studentclassid=c.classid
+				<if test="aa.studentname != null and aa.studentname != ''">
+					and t.studentname like '%${aa.studentname}%'
+				</if>
+				<if test="aa.studentclassid != null and aa.studentclassid != ''">
+					and t.studentclassid =#{aa.studentclassid}
+				</if>
+				<if test="aa.age1 != null and aa.age1 != ''">
+					and t.studentage >=#{aa.age1}
+				</if>
+				<if test="aa.age2 != null and aa.age2 != ''">
+					and t.studentage &lt;=#{aa.age2}
+				</if>
+				<if test="aa.date1 != null and aa.date1 != ''">
+					and t.studentbirth >=to_date(#{aa.date1},'yyyy-mm-dd')
+				</if>
+				<if test="aa.date2 != null and aa.date2 != ''">
+					and t.studentbirth &lt;=to_date(#{aa.date2},'yyyy-mm-dd')
+				</if>
+		  )a  where rownum &lt;=#{end}
+		) where rn > #{start}
+	</select>
+
+	<select id="queryTotal" resultType="long">
+		select count(*) from  t_student t,t_classes c  
+		where t.studentclassid=c.classid
+			<if test="studentname != null and studentname != ''">
+					and t.studentname like '%${studentname}%'
+				</if>
+				<if test="studentclassid != null and studentclassid != ''">
+					and t.studentclassid =#{studentclassid}
+				</if>
+				<if test="age1 != null and age1 != ''">
+					and t.studentage >=#{age1}
+				</if>
+				<if test="age2 != null and age2 != ''">
+					and t.studentage &lt;=#{age2}
+				</if>
+				<if test="date1 != null and date1 != ''">
+					and t.studentbirth >=to_date(#{date1},'yyyy-mm-dd')
+				</if>
+				<if test="date2 != null and date2 != ''">
+					and t.studentbirth &lt;=to_date(#{date2},'yyyy-mm-dd')
+				</if>
+	</select>	
+	-->

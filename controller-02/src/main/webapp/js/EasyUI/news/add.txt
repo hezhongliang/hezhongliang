@@ -1,0 +1,99 @@
+<%-- 
+	<table id="dg3"></table> 
+	$('#adddialog').dialog({    
+				    title: '录入员工',    
+				    width: 400,    
+				    height: 360,    
+				    closed: false,    
+				    cache: true,    
+				    modal: true,
+				    buttons:[{
+						text:'保存',
+						type:'submit',  
+                        iconCls:'icon-ok',
+						handler:function(){
+							if($("#pass1").val()==$("#pass2").val()&&$("#pass1").val()!=""){
+							   $('#addform').form("submit",{  
+                                   url:'<%=request.getContextPath()%>/crud/add.do',  
+                                   onSubmit:function(){  
+                                       return true;  
+                                   },  
+                                   success:function(data){  
+                                         $('#adddialog').dialog('close');   
+                                         $("#dg").datagrid("reload"); 
+                                   }  
+                               });  
+							}else{
+								alert("两次密码输入不一致");
+							}
+						}
+					},{
+						text:'关闭',
+						handler:function(){
+							 $("#adddialog").dialog("close");  
+							  $.messager.show({
+				                 				title:'我的消息',
+				                 				msg:'保存成功',
+				                 				timeout:1000,
+				                 				showType:'show'
+				                 			});
+						}
+					}]
+
+				    
+				});  
+				
+-------controller
+	@RequestMapping("add")
+	@ResponseBody
+	public Object add(User user){
+		int n=userService.add(user);
+		return n;
+	
+	}
+-------service
+	@Override
+	public int add(User user) {
+		//user.setUserid(UUID.randomUUID().toString());  使用UUID增ID
+		//user.setDate(new Date()); 	
+		return userDao.add(user);
+	}
+		
+-------mapper //顺序要和数据库对应上
+	<insert id="add">
+		insert into tt_user values(seq_stu.nextval,#{username},
+			#{usersex},#{useraccount},#{userpass}
+		)
+	</insert>
+	
+----------------------
+密码验证
+	密码：<input name="staffpass" id="ps1" class="easyui-validatebox" required="required"><br>
+	确认密码：<input id="ps2"  class="easyui-validatebox" required="required" validType="equals['#ps1']" ><br>
+	
+	$(function(){
+	$.extend($.fn.validatebox.defaults.rules, {    
+	    equals: {    
+	        validator: function(value,param){    
+	            return value == $(param[0]).val();    
+	        },    
+	        message: '两次密码不一致'   
+	    }    
+	});  
+})
+
+下拉树并判断是否为叶子节点
+	<input id="ctree" name="deptid">  
+	
+	$(function(){
+		$('#ctree').combotree({    
+		    url: '<%=request.getContextPath()%>/menu/queryDept.do',   
+		    parentField:"pid",
+		    onBeforeSelect:function(node){//节点被转选中前触发，返回false可以取消选择动作
+			//isLeaf:判断 是否是叶子节点    返回值为 布尔类型
+		    	return $('#ctree').tree('isLeaf',node.target);
+		    }
+		});  
+	})
+	
+ --%>

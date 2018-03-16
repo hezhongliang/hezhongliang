@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/common-02/common-02.iml" filepath="$PROJECT_DIR$/common-02/common-02.iml" />
+      <module fileurl="file://$PROJECT_DIR$/controller-02/controller-02.iml" filepath="$PROJECT_DIR$/controller-02/controller-02.iml" />
+      <module fileurl="file://$PROJECT_DIR$/entity-02/entity-02.iml" filepath="$PROJECT_DIR$/entity-02/entity-02.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mapper-02/mapper-02.iml" filepath="$PROJECT_DIR$/mapper-02/mapper-02.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service-02/service-02.iml" filepath="$PROJECT_DIR$/service-02/service-02.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ssm-02.iml" filepath="$PROJECT_DIR$/ssm-02.iml" />
+    </modules>
+  </component>
+</project>

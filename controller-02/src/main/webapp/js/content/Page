@@ -1,0 +1,180 @@
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<input id="textid">
+<input type="button" class="btn btn-primary" onclick="search()" value="搜索">
+<table class="table" id="menu-table" border="1"></table>
+<script type="text/javascript">
+function search(){
+	$("#menu-table").bootstrapTable("refresh",{'pageNumber':1});
+}
+$(function(){
+    $("#menu-table").bootstrapTable({
+//      url:"<%=request.getContextPath()%>/crud/queryAll.do",
+//      url:"<%=request.getContextPath()%>/crud/queryPage.do",
+        striped: true,//隔行变色
+//        showColumns:true,//是否显示 内容列下拉框
+//        showPaginationSwitch:true,//是否显示 数据条数选择框
+        minimumCountColumns:1,//最小留下一个
+//        showRefresh:true,//显示刷新按钮
+//        showToggle:true,//显示切换视图
+//     	search:true,//是否显示搜索框
+//     	searchOnEnterKey:true,//设置为 true时，按回车触发搜索方法，否则自动触发搜索方法
+        pagination:true,//开启分页
+        paginationLoop:true,//开启分页无限循环
+        pageNumber:1,//当前页数
+        pageSize:2,//每页条数
+        pageList:[2,3,4],//如果设置了分页，设置可供选择的页面数据条数。设置为All 则显示所有记录。
+        sidePagination:"server",//分页方式：client客户端分页，server服务端分页（*） ，如果不分页，必须干掉！！！
+        method:'post',//发送请求的方式
+        contentType:"application/x-www-form-urlencoded",//必须的否则条件查询时会乱码
+        queryParams:function(param){
+        	console.info(param.search)
+//                var name= $("#empName").val();
+//                 var sex = $("#sex").val();
+//                 alert(name+","+sex);
+//                 return 的数据 是传递到  action类中的参数
+
+                return {
+//                     "emp.empname":name,
+                    "textid":$("#textid").val(),
+                    page:this.pageNumber,//当前页
+                    rows:this.pageSize //每页条数
+                 }
+           },
+        columns: [
+         {
+             checkbox:true,
+        },{
+            field: 'companytype',
+            title: '企业性质',
+            width: 100,
+            formatter: function(value,row,index){
+        		return value == "1"?'国企':(value == "2" ? '私企' : "合资企业");
+        	}
+           
+        },{
+            field: 'sysaccout',
+            title: '会计制度',
+            width: 100,
+            formatter: function(value,row,index){
+        		return value == "1"?'企业会计制度':(value == "2" ? '金融企业会计制度' : "行政事业单位");
+        	}
+           
+        },{
+            field: 'aa',
+            title: '操作',
+            width: 100,
+            formatter: function(value,row,index){
+            	console.info(value);console.info(row.goodsid);console.info(index);
+        		return '<input type="button" class="btn btn-primary" onclick="search1(\''+row.goodsid+'\')" value="查看详细">';
+        	}
+           
+        }]
+    })
+})
+</script>
+</body>
+</html>
+
+<!--
+-----oracle查询分页
+-----controller
+	@RequestMapping("queryAll")
+	@ResponseBody
+	public Object queryAll(Menus menu,int page,int rows){
+		JSONObject json = userService.queryAll(menu,page,rows);
+		return json;
+	}
+-----service
+	@Override
+	public JSONObject queryAll(Menus menu, int page, int rows) {
+		Long count = userDao.queryCount(menu);
+		int start = (page-1)*rows;
+		int end = start+rows;
+		List<Storage> list = userDao.queryList(menu,start,end);
+		JSONObject json = new JSONObject();
+		json.put("total", count);
+		json.put("rows", list);
+		return json;
+	}
+-------dao
+	List<Storage> queryList(@Param(value="aa")Menus menu, @Param(value="start")int start, @Param(value="end")int end);
+-------mapper
+	<select id="queryList" resultType="com.jk.pojo.Menus">
+	 	select * from(
+		select a.*,rownum rn from(
+		select t.*,m.text mname from  t_menu t left join t_menu m on t.pid = m.id where 1=1
+		<if test="aa.text != null and aa.text != ''">
+					and t.text like '%${aa.text}%'
+		</if>
+		)a where rownum &lt;= #{end}
+		)where rn > #{start}
+ 
+	</select>
+	<select id="queryCount" resultType="long">
+		select count(*) from t_menu t left join t_menu m on t.pid = m.id where 1=1
+		<if test="text != null and text != ''">
+					and t.text like '%${text}%'
+		</if>
+	</select>
+ -->
+<!--
+---批量删除
+	function del(){
+	var rows= $("#mytable").bootstrapTable("getSelections");
+	if (rows.length>=1) {
+		var id="";
+		for (var i = 0; i < rows.length; i++) {
+			id+=rows[i].id+",";
+		}
+		$.ajax({
+			url:"<%=request.getContextPath()%>/crud/del.do",
+			type:"post",
+			data:{"bid":id},
+			dataType:"text",
+			success:function (msg){
+				location.reload();
+			}
+			
+		})
+		}else{
+				alert("请至少选择一条数据")
+			}
+		}
+
+----------controller
+	@RequestMapping("del")
+	@ResponseBody
+	public Object todel(String[] ids){
+		int n=brandService.del(ids);
+		/*
+		String [] ids1=ids.split(",");
+		for(int i=0;i<ids1.length;i++){
+			SocialSecurity Social=new SocialSecurity();
+			Social.setSocialSecurityid(Integer.parseInt(ids1[i]));
+			
+			 userDao.del(Social);
+			}*/
+
+		return n;
+	}
+	
+---------dao
+	int del(@Param(value="idarray")String[] ids);
+	
+--------mapper
+	<delete id="del">
+	 delete from t_brand t where t.brandid in
+	 <foreach item="item" index="index" collection="idarray" open="(" separator="," close=")"> 
+				#{item} 
+	</foreach>
+	</delete>
+
+-->

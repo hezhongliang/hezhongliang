@@ -1,0 +1,81 @@
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<!-- 引入EasyUI的样式文件-->
+<link rel="stylesheet" href="${pageContext.request.contextPath}/js/EasyUI/themes/default/easyui.css" type="text/css"/>
+<!-- 引入EasyUI的图标样式文件-->
+<link rel="stylesheet" href="${pageContext.request.contextPath}/js/EasyUI/themes/icon.css" type="text/css"/>
+</head>
+<body class="easyui-layout">   
+
+    <div data-options="region:'north',title:'North Title',split:true" style="height:100px;"></div>   
+    <div data-options="region:'west',title:'West',split:true" style="width:200px;">
+    	<ul id="treeid"></ul>  
+    </div>   
+    <div data-options="region:'center',title:'center title'" style="padding:5px;background:#eee;">
+   		<div id="tt" ></div>  
+    </div>   
+
+<!-- 引入JQuery -->
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/EasyUI/jquery.min.js"></script>
+<!-- 引入EasyUI -->
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/EasyUI/jquery.easyui.min.js"></script>
+<!-- 引入EasyUI的中文国际化js，让EasyUI支持中文 -->
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/EasyUI/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/EasyUI/util-js.js"></script>
+<script type="text/javascript">
+	$(function(){
+		$("#tt").tabs({
+			fit:true
+		});
+		$('#treeid').tree({    
+		    url:'<%=request.getContextPath()%>/crud/queryMenu.do',
+		    parentField:'pid',
+		    onSelect: function(node){
+		    	if(node.url != null && node.url != ""){
+		    		addTabs(node.url,node.text);
+		    	}
+			}
+
+		}); 
+	})
+	function addTabs(urlStr,titleStr){
+		if($('#tt').tabs('exists',titleStr)){
+			$('#tt').tabs('select',titleStr)
+		}else{
+			$("#tt").tabs('add',{    
+			    title:titleStr,    
+//	 		    content:'Tab Body', 
+				href:"<%=request.getContextPath()%>/"+urlStr,
+			    closable:true,    
+			    tools:[{    
+			        iconCls:'icon-mini-refresh',    
+			        handler:function(){    
+			            alert('refresh');    
+			        }    
+			    }] 
+			});	
+		}
+	}
+</script>	
+</body>
+</html>
+<!-- 
+--Java代码————————————————————————————————————————————————————————————————————————————————————————————————————
+
+@RequestMapping("queryMenu")
+	@ResponseBody
+	public Object queryMenu(){
+		List list=userService.queryMenu();
+		return list;
+	}
+
+
+	<select id="queryMenu" resultType="com.jk.pojo.Menu">
+		select * from t_menu
+	</select> -->

@@ -1,0 +1,82 @@
+<%--
+	function edits(id){
+	 $.ajax({  
+         type: "post",  
+         url: "<%=request.getContextPath()%>/crud/toeditById.do?seriesid="+id,  
+         success: function (data) {  
+             alert(data.seriesid)
+             $("[name='seriesname']").val(data.seriesname);  
+             $("[name='seriesdescribe']").val(data.seriesdescribe);
+             $("#brandid").combobox('select',data.brandid)  
+             $('#adddialog2').dialog({  
+            	 collapsible:true,  
+                 iconCls:'icon-edit',  
+                 title:'&nbsp;修改用户',  
+                 height:260,  
+                 width:360,  
+				    buttons:[{
+						text:'保存',
+						type:'submit',  
+                        iconCls:'icon-ok',
+						handler:function(){
+							$.messager.confirm("提示", "确定要修改吗？", function (isTrue) {  
+						        if (isTrue) { 
+							   $('#addform2').form("submit",{  
+                                   url:'<%=request.getContextPath()%>/crud/editss.do',  
+                                   onSubmit:function(){  
+                                       return true;  
+                                   },  
+                                   success:function(data){  
+                                         $('#adddialog2').dialog('close');   
+                                         $("#dg2").datagrid("reload"); 
+                                          $.messager.show({
+  			                 				title:'我的消息',
+  			                 				msg:'修改成功',
+  			                 				timeout:1000,
+  			                 				showType:'show'
+  			                 			});
+                                   }  
+                               });   
+  							  }
+						        
+							})
+						}
+					},{
+						text:'关闭',
+						handler:function(){
+							 $("#adddialog2").dialog("close");  
+						}
+					}]
+
+             });
+         }  
+
+     }); 
+
+}
+
+-------controller
+	@RequestMapping("add")
+	@ResponseBody
+	public Object add(User user){
+		int n=userService.add(user);
+		return n;
+	
+	}
+-------service
+	@Override
+	public int add(User user) {
+		//user.setUserid(UUID.randomUUID().toString());  使用UUID增ID
+		//user.setDate(new Date()); 	
+		return userDao.add(user);
+	}
+		
+-------mapper //顺序要和数据库对应上
+	<insert id="add">
+		insert into tt_user values(seq_stu.nextval,#{username},
+			#{usersex},#{useraccount},#{userpass}
+		)
+	</insert>
+	
+	
+--%>
